@@ -24,7 +24,7 @@
 - name: Copy custom torrc template
   ansible.builtin.copy:
     src: "{{ tor_torrc_file }}"
-    dest: "{{ tor_build_context }}/torrc.template"
+    dest: "{{ tor_build_context }}/torrc"
     mode: '0644'
   when: tor_torrc_file != ""
 
@@ -48,9 +48,9 @@
     mode: '0644'
 
 - name: Build and run Tor container
-  community.docker.docker_compose:
+  community.docker.docker_compose_v2:
     project_src: "{{ tor_build_context }}"
-    build: yes
-    pull: yes
+    build: true
+    pull: true
     state: present
   register: output
