@@ -1,0 +1,56 @@
+#SPDX-License-Identifier: MIT-0
+---
+# tasks file for tor-role
+
+- name: Ensure build context directory exists
+  ansible.builtin.file:
+    path: "{{ tor_build_context }}"
+    state: directory
+    mode: '0755'
+
+- name: Copy Tor key file to build context
+  ansible.builtin.copy:
+    src: "{{ tor_key_file }}"
+    dest: "{{ tor_build_context }}/{{ tor_key_file | basename }}"
+    mode: '0600'
+  when: tor_key_file != ""
+
+- name: Copy Dockerfile template
+  ansible.builtin.template:
+    src: Dockerfile.j2
+    dest: "{{ tor_build_context }}/Dockerfile"
+    mode: '0644'
+
+- name: Copy custom torrc template
+  ansible.builtin.copy:
+    src: "{{ tor_torrc_file }}"
+    dest: "{{ tor_build_context }}/torrc.template"
+    mode: '0644'
+  when: tor_torrc_file != ""
+
+- name: Copy default torrc template
+  ansible.builtin.copy:
+    src: "../tor/torrc.template"
+    dest: "{{ tor_build_context }}/torrc.template"
+    mode: '0644'
+  when: tor_torrc_file == ""
+
+- name: Copy tor-wrapper script
+  ansible.builtin.copy:
+    src: "../tor/tor-wrapper.sh"
+    dest: "{{ tor_build_context }}/tor-wrapper.sh"
+    mode: '0755'
+
+- name: Generate docker-compose.yml from template
+  ansible.builtin.template:
+    src: docker-compose.yml.j2
+    dest: "{{ tor_build_context }}/docker-compose.yml"
+    mode: '0644'
+
+- name: Build and run Tor container
+  community.docker.docker_compose:
+    project_src: "{{ tor_build_context }}"
+    build: yes
+    pull: yes
+    state: present
+  register: output

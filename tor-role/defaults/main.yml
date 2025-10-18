@@ -1,0 +1,25 @@
+#SPDX-License-Identifier: MIT-0
+---
+# defaults file for tor-role
+
+# Path to the Tor key file that will be copied into the container
+tor_key_file: ""  # This should be set by the user
+
+# Path to the custom torrc file (if not provided, will use default from tor directory)
+tor_torrc_file: ""  # Optional: Set to use custom torrc file
+
+# Docker container name
+tor_container_name: "tor"
+
+# Docker networks to attach the container to
+tor_networks: []  # Example: ["network1", "network2"]
+
+# Docker image name and tag
+tor_image_name: "tor"
+tor_image_tag: "latest"
+
+# Build context directory
+tor_build_context: "{{ role_path }}/files/build"
+
+# Port mapping for SOCKS proxy
+tor_socks_port: 9050

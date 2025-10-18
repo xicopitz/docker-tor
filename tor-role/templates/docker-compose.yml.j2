@@ -1,0 +1,24 @@
+version: '3.8'
+
+services:
+  {{ tor_container_name }}:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    image: {{ tor_image_name }}:{{ tor_image_tag }}
+    container_name: {{ tor_container_name }}
+    restart: unless-stopped
+    ports:
+      - "{{ tor_socks_port }}:9050"
+    networks:
+      {% for network in tor_networks %}
+      - {{ network }}
+      {% endfor %}
+
+{% if tor_networks %}
+networks:
+  {% for network in tor_networks %}
+  {{ network }}:
+    external: true
+  {% endfor %}
+{% endif %}
