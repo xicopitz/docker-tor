@@ -37,7 +37,7 @@
 
 - name: Copy tor-wrapper script
   ansible.builtin.copy:
-    src: "../tor/tor-wrapper.sh"
+    src: "tor-wrapper.sh"
     dest: "{{ tor_build_context }}/tor-wrapper.sh"
     mode: '0755'
 
