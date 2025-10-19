@@ -50,6 +50,6 @@
 - name: Build and run Tor container
   community.docker.docker_compose_v2:
     project_src: "{{ tor_build_context }}"
-    build: true
+    build: "always"
     state: present
   register: output
